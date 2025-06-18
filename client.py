@@ -16,5 +16,3 @@ async def query_ollama(prompt: str, model: str = "mistral:7b") -> str:
         print("Ollama connection failed maybe not running?")
     except httpx.TimeoutException:
         print("timeout error model took longer then 10s to respond")
-    finally:
-        print("some other error occured")

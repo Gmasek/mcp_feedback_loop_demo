@@ -8,5 +8,5 @@ async def fetch_context() -> list:
     data = []
     async for doc in cursor:
 
-        data.append(doc)
+        data.append({doc["Response"]: doc["rating"]})
     return data
