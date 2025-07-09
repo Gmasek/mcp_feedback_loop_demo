@@ -5,6 +5,7 @@ from db import get_collection
 from pipeline import pipeline
 
 
+### Obv get this from user when integrated
 def get_valid_rating() -> int:
     while True:
         rating_input = input("Rate the response (1-5): ").strip()
@@ -24,6 +25,12 @@ def get_valid_rating() -> int:
             print("Rating must be between 1 and 5.")
 
 
+def get_text_input():
+    text_rating = input("How would you change the response? ").strip()
+    return text_rating
+
+
+#### NON PIPELINE RUN
 # async def main():
 #    context = await fetch_context()
 #
@@ -46,6 +53,7 @@ def get_valid_rating() -> int:
 #    print("Saved to MongoDB!")
 
 
+#### Pipeline main function
 async def main():
     response = pipeline.run({"fetcher": {"tone": "Cheerful"}})
     res_text = response["validator"]["valid_replies"][-1].text
@@ -53,7 +61,10 @@ async def main():
     # Get rating
     rating = get_valid_rating()
     ratings = get_collection()
-    await ratings.insert_one({"Response": res_text, "rating": rating})
+    text_rating = get_text_input()
+    await ratings.insert_one(
+        {"Response": res_text, "rating": rating, "text_rating": text_rating}
+    )
     print("Saved to MongoDB!")
 
 

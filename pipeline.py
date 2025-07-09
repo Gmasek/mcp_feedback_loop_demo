@@ -13,18 +13,25 @@ import os
 
 @component
 class MongoDataFetcher:
-    def __init__(self):
-        self.client = MongoClient(os.getenv("MONGODB"))
-        self.collection = self.client["Notification_feedback"]["Feedback"]
-        documents = self.collection.find()
-        data = []
-        print("db fetch called once")
-        for doc in documents:
-            data.append({doc["Response"]: doc["rating"]})
-        self.data = data
 
     @component.output_types(messages=list[ChatMessage])
     def run(self, tone: str, res_to_fix: list[ChatMessage] = None):
+        self.client = MongoClient(os.getenv("MONGODB"))
+        self.collection = self.client["Notification_feedback"]["Feedbacks"]
+        documents = self.collection.find()
+
+        data = {"feedbacks": []}
+
+        for doc in documents:
+            data["feedbacks"].append(
+                {
+                    "Motivational_quote": doc["Response"],
+                    "rating": doc["rating"],
+                    "text_feedback": doc["text_rating"],
+                }
+            )
+        self.data = data
+
         if res_to_fix == None:
 
             messages = [
